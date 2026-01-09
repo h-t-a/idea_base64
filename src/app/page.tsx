@@ -104,18 +104,19 @@ export default function Home() {
         {/* Result Area (NEVER UNMOUNTS AFTER FIRST USE) */}
         {hasResult && (
           <div className="relative space-y-2">
+
+            {/* Subtle inline indicator */}
+            {isConverting && (
+              <div className="absolute text-xs text-gray-400">
+                Updating…
+              </div>
+            )}
+
             <textarea
               readOnly
               className="w-full h-32 border rounded-md p-2 text-xs resize-none"
               value={result}
             />
-
-            {/* Subtle inline indicator */}
-            {isConverting && (
-              <div className="absolute top-2 right-2 text-xs text-gray-400">
-                Updating…
-              </div>
-            )}
 
             <button
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
