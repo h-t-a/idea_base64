@@ -111,11 +111,11 @@ export default function Home() {
             />
 
             {/* Subtle inline indicator */}
-            {isConverting && (
+            {/* {isConverting && (
               <div className="absolute top-2 right-2 text-xs text-gray-400">
                 Updating…
               </div>
-            )}
+            )} */}
 
             <button
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
