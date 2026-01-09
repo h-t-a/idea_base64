@@ -106,7 +106,7 @@ export default function Home() {
           <div className="space-y-2">
             {/* Updating Indicator (left above textarea) */}
             {isConverting && (
-              <div className="text-xs text-gray-500 italic mb-5">
+              <div className="text-xs text-gray-500 italic">
                 Updating…
               </div>
             )}
