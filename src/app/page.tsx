@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Format = 'base64' | 'dataurl';
 
@@ -13,7 +13,7 @@ export default function Home() {
 
   const hasResult = result.length > 0;
 
-  async function convert(file: File, format: Format, silent = false) {
+  async function convert(file: File, format: Format) {
     setError(null);
     setIsConverting(true);
 
@@ -36,6 +36,7 @@ export default function Home() {
       setResult(format === 'base64' ? data.base64 : data.dataUrl);
     } catch (err: any) {
       setError(err.message);
+      setResult('');
     } finally {
       setIsConverting(false);
     }
@@ -49,7 +50,7 @@ export default function Home() {
   // Quiet background conversion on format switch
   useEffect(() => {
     if (file) {
-      convert(file, format, true);
+      convert(file, format);
     }
   }, [format]);
 
@@ -67,6 +68,7 @@ export default function Home() {
               type="radio"
               checked={format === 'dataurl'}
               onChange={() => setFormat('dataurl')}
+              disabled={isConverting}
             />
             Data URL
           </label>
@@ -76,6 +78,7 @@ export default function Home() {
               type="radio"
               checked={format === 'base64'}
               onChange={() => setFormat('base64')}
+              disabled={isConverting}
             />
             Base64
           </label>
@@ -101,16 +104,15 @@ export default function Home() {
           <div className="text-red-600 text-sm text-center">{error}</div>
         )}
 
-        {/* Subtle inline indicator */}
-        {isConverting && (
-          <div className="absolute text-xs text-gray-400">
-            Updating…
-          </div>
-        )}
-
-        {/* Result Area (NEVER UNMOUNTS AFTER FIRST USE) */}
+        {/* Converting / Result Area */}
         {hasResult && (
-          <div className="relative space-y-2">
+          <div className="space-y-2">
+            {/* Converting message above textarea */}
+            {isConverting && (
+              <div className="text-sm text-gray-500 font-medium">
+                Converting… Please wait
+              </div>
+            )}
 
             <textarea
               readOnly
