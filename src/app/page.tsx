@@ -1,21 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+type Format = 'base64' | 'dataurl';
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [format, setFormat] = useState<Format>('dataurl');
+  const [result, setResult] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [format, setFormat] = useState<'base64' | 'dataurl'>('dataurl');
+  const [isConverting, setIsConverting] = useState(false);
 
-  async function handleUpload(file: File) {
-    setLoading(true);
+  const hasResult = result.length > 0;
+
+  async function convert(file: File, format: Format, silent = false) {
     setError(null);
-    setResult(null);
+    setIsConverting(true);
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('format', format); // send requested format
+    formData.append('format', format);
 
     try {
       const res = await fetch('/api/convert', {
@@ -29,14 +33,25 @@ export default function Home() {
         throw new Error(data.message || 'Conversion failed');
       }
 
-      // handle either response type
-      setResult(data.base64 || data.dataUrl);
+      setResult(format === 'base64' ? data.base64 : data.dataUrl);
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setIsConverting(false);
     }
   }
+
+  function handleUpload(selectedFile: File) {
+    setFile(selectedFile);
+    convert(selectedFile, format);
+  }
+
+  // Quiet background conversion on format switch
+  useEffect(() => {
+    if (file) {
+      convert(file, format, true);
+    }
+  }, [format]);
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
@@ -50,8 +65,6 @@ export default function Home() {
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
-              name="format"
-              value="dataurl"
               checked={format === 'dataurl'}
               onChange={() => setFormat('dataurl')}
             />
@@ -61,8 +74,6 @@ export default function Home() {
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
-              name="format"
-              value="base64"
               checked={format === 'base64'}
               onChange={() => setFormat('base64')}
             />
@@ -70,7 +81,7 @@ export default function Home() {
           </label>
         </div>
 
-        {/* File Upload */}
+        {/* Upload */}
         <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer hover:border-blue-500 transition">
           <input
             type="file"
@@ -85,31 +96,32 @@ export default function Home() {
           </span>
         </label>
 
-        {/* Loading */}
-        {loading && (
-          <div className="text-center text-blue-600 font-medium">
-            Converting...
-          </div>
-        )}
-
         {/* Error */}
         {error && (
           <div className="text-red-600 text-sm text-center">{error}</div>
         )}
 
-        {/* Result */}
-        {result && (
-          <div className="space-y-3">
+        {/* Result Area (NEVER UNMOUNTS AFTER FIRST USE) */}
+        {hasResult && (
+          <div className="relative space-y-2">
             <textarea
               readOnly
-              className="w-full h-32 border rounded-md p-2 text-xs"
+              className="w-full h-32 border rounded-md p-2 text-xs resize-none"
               value={result}
             />
+
+            {/* Subtle inline indicator */}
+            {isConverting && (
+              <div className="absolute top-2 right-2 text-xs text-gray-400">
+                Updating…
+              </div>
+            )}
+
             <button
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
               onClick={() => navigator.clipboard.writeText(result)}
             >
-              Copy
+              Copy {format === 'base64' ? 'Base64' : 'Data URL'}
             </button>
           </div>
         )}
