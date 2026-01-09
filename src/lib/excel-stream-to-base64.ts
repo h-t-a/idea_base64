@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 export async function streamToBase64(
   stream: NodeJS.ReadableStream,
   mimeType: string
-): Promise<{ base64: string; dataUrl: string }> {
+): Promise<{ base64: string }> { //; dataUrl: string
   const chunks: Buffer[] = [];
 
   for await (const chunk of stream) {
