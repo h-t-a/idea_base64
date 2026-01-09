@@ -105,11 +105,11 @@ export default function Home() {
         {hasResult && (
           <div className="space-y-2">
             {/* Updating Indicator (left above textarea) */}
-            {isConverting && (
+            {/* {isConverting && (
               <div className="text-xs text-gray-500 italic">
                 Updating…
               </div>
-            )}
+            )} */}
 
             <textarea
               readOnly
