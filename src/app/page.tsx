@@ -101,16 +101,16 @@ export default function Home() {
           <div className="text-red-600 text-sm text-center">{error}</div>
         )}
 
+        {/* Subtle inline indicator */}
+        {isConverting && (
+          <div className="absolute text-xs text-gray-400">
+            Updating…
+          </div>
+        )}
+
         {/* Result Area (NEVER UNMOUNTS AFTER FIRST USE) */}
         {hasResult && (
           <div className="relative space-y-2">
-
-            {/* Subtle inline indicator */}
-            {isConverting && (
-              <div className="absolute text-xs text-gray-400">
-                Updating…
-              </div>
-            )}
 
             <textarea
               readOnly
