@@ -104,15 +104,13 @@ export default function Home() {
           <div className="text-red-600 text-sm text-center">{error}</div>
         )}
 
-        {/* Converting / Result Area */}
+        {/* Result Area */}
         {hasResult && (
-          <div className="space-y-2">
-            {/* Converting message above textarea */}
-            {isConverting && (
-              <div className="text-sm text-gray-500 font-medium">
-                Converting… Please wait
-              </div>
-            )}
+          <div className="space">
+            {/* Reserve space for converting message to prevent bounce */}
+            <div className="text-sm text-gray-500">
+              {isConverting ? 'Converting… Please wait' : '\u00A0'}
+            </div>
 
             <textarea
               readOnly
