@@ -47,7 +47,6 @@ export default function Home() {
     convert(selectedFile, format);
   }
 
-  // Quiet background conversion on format switch
   useEffect(() => {
     if (file) {
       convert(file, format);
@@ -55,14 +54,18 @@ export default function Home() {
   }, [format]);
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-lg bg-white shadow-md rounded-xl p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-center">
+    <main className="min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900 transition-colors">
+      <div className="w-full max-w-lg rounded-xl p-6 space-y-6
+        bg-white dark:bg-gray-800
+        shadow-md dark:shadow-none
+        border border-gray-200 dark:border-gray-700">
+
+        <h1 className="text-2xl font-semibold text-center text-gray-900 dark:text-gray-100">
           Excel Converter
         </h1>
 
         {/* Format Selection */}
-        <div className="flex justify-center gap-6 text-sm">
+        <div className="flex justify-center gap-6 text-sm text-gray-700 dark:text-gray-300">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
@@ -85,7 +88,14 @@ export default function Home() {
         </div>
 
         {/* Upload */}
-        <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer hover:border-blue-500 transition">
+        <label className="
+          flex flex-col items-center justify-center
+          border-2 border-dashed rounded-lg p-6 cursor-pointer
+          transition
+          border-gray-300 dark:border-gray-600
+          hover:border-blue-500 dark:hover:border-blue-400
+          text-gray-600 dark:text-gray-300
+        ">
           <input
             type="file"
             accept=".xls,.xlsx"
@@ -94,32 +104,46 @@ export default function Home() {
               e.target.files && handleUpload(e.target.files[0])
             }
           />
-          <span className="text-gray-600 text-center">
+          <span className="text-center">
             Drag & drop Excel file or click to browse
           </span>
         </label>
 
         {/* Error */}
         {error && (
-          <div className="text-red-600 text-sm text-center">{error}</div>
+          <div className="text-red-600 dark:text-red-400 text-sm text-center">
+            {error}
+          </div>
         )}
 
-        {/* Result Area */}
-        {hasResult && (
-          <div className="space">
-            {/* Reserve space for converting message to prevent bounce */}
-            <div className="text-sm text-gray-500">
-              {isConverting ? 'Converting… Please wait' : '\u00A0'}
-            </div>
+        {/* Conversion status (NO BOUNCE) */}
+        <div className="text-sm text-gray-500 dark:text-gray-400 min-h-[1rem] text-center">
+          {isConverting ? 'Converting… Please wait' : '\u00A0'}
+        </div>
 
+        {/* Result */}
+        {hasResult && (
+          <div className="space-y-2">
             <textarea
               readOnly
-              className="w-full h-32 border rounded-md p-2 text-xs resize-none"
               value={result}
+              className="
+                w-full h-32 resize-none rounded-md p-2 text-xs
+                border
+                bg-gray-50 dark:bg-gray-900
+                text-gray-900 dark:text-gray-100
+                border-gray-300 dark:border-gray-600
+                focus:outline-none
+              "
             />
 
             <button
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+              className="
+                w-full py-2 rounded-md font-medium transition
+                bg-blue-600 hover:bg-blue-700
+                text-white
+                disabled:opacity-50
+              "
               onClick={() => navigator.clipboard.writeText(result)}
             >
               Copy {format === 'base64' ? 'Base64' : 'Data URL'}

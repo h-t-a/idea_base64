@@ -16,18 +16,37 @@ export const metadata: Metadata = {
   title: "Idea Converter",
 };
 
+// export default function RootLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   return (
+//     <html lang="en">
+//       <body
+//         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+//       >
+//         {children}
+//       </body>
+//     </html>
+//   );
+// }
+
+import './globals.css';
+import ThemeProvider from "./ThemeProvider";
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider />
         {children}
       </body>
     </html>
   );
 }
+
